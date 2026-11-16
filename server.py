@@ -33,6 +33,17 @@ import numpy as np
 import requests
 from flask import Flask, Response, jsonify, render_template, request, url_for
 
+# Modulos del proyecto. El servidor es el composition root: solo cablea.
+from robot.cerebro import (
+    buscar_respuesta_quechua_validada,
+    clasificar_tema,
+    contiene_wake_word,
+    detectar_idioma,
+    extraer_pregunta_con_wake,
+    normalizar_texto,
+    responder_localmente,
+)
+
 
 # ----------------------------- Configuracion -----------------------------
 
@@ -132,45 +143,6 @@ app = Flask(__name__)
 # ----------------------------- Texto y wake word -----------------------------
 
 
-def normalizar_texto(texto):
-    texto = unicodedata.normalize("NFD", texto.lower())
-    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
-    texto = re.sub(r"[^a-z0-9 ]+", " ", texto)
-    return re.sub(r"\s+", " ", texto).strip()
-
-
-VARIANTES_WAKE = (
-    "yachaybot",
-    "yachay bot",
-    "yachaibot",
-    "yachai bot",
-    "yachay pod",
-)
-
-
-def contiene_wake_word(texto):
-    """Acepta variantes frecuentes de transcripcion del nombre Yachaybot."""
-    limpio = normalizar_texto(texto)
-    if len(limpio.split()) > 20:
-        return False
-    return any(variante in limpio for variante in VARIANTES_WAKE)
-
-
-def extraer_pregunta_con_wake(texto):
-    """Extrae lo dicho junto al nombre del robot, si existe una pregunta."""
-    limpio = normalizar_texto(texto)
-    for variante in sorted(VARIANTES_WAKE, key=len, reverse=True):
-        posicion = limpio.find(variante)
-        if posicion >= 0:
-            resto = (limpio[:posicion] + " " + limpio[posicion + len(variante):]).strip()
-            resto = re.sub(r"\s+", " ", resto)
-            # "hola", "oye" o "por favor" no constituyen por si solos una consulta.
-            palabras_vacias = {"hola", "oye", "por", "favor", "robot"}
-            utiles = [p for p in resto.split() if p not in palabras_vacias]
-            return resto if len(utiles) >= 2 else ""
-    return ""
-
-
 def clave_audio(pcm):
     return hashlib.sha256(pcm).hexdigest()
 
@@ -196,75 +168,6 @@ def recuperar_pregunta_wake(pcm):
     return pregunta if time.monotonic() - marca <= WAKE_CACHE_TTL_S else ""
 
 
-# Agregar aqui solo respuestas revisadas por una persona competente en la
-# variedad de quechua que se usara en Tayacaja. Se deja vacio intencionalmente.
-# Ejemplo de estructura (NO copiar como traduccion):
-# RESPUESTAS_QUECHUA_VALIDADAS["clave normalizada"] = "respuesta validada"
-RESPUESTAS_QUECHUA_VALIDADAS = {}
-
-
-def buscar_respuesta_quechua_validada(texto):
-    return RESPUESTAS_QUECHUA_VALIDADAS.get(normalizar_texto(texto))
-
-
-# ----------------------------- Hora y fecha locales -----------------------------
-
-DIAS = ("lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")
-MESES = (
-    "enero", "febrero", "marzo", "abril", "mayo", "junio",
-    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
-)
-
-
-def respuesta_hora(ahora):
-    hora_12 = ahora.hour % 12 or 12
-    periodo = "de la manana" if ahora.hour < 12 else (
-        "de la tarde" if ahora.hour < 19 else "de la noche"
-    )
-    if ahora.minute == 0:
-        minuto_texto = "en punto"
-    elif ahora.minute == 1:
-        minuto_texto = "y un minuto"
-    else:
-        minuto_texto = f"y {ahora.minute} minutos"
-    inicio = "Es la" if hora_12 == 1 else "Son las"
-    return f"{inicio} {hora_12} {minuto_texto} {periodo}."
-
-
-def respuesta_fecha(ahora):
-    return (
-        f"Hoy es {DIAS[ahora.weekday()]}, {ahora.day} de "
-        f"{MESES[ahora.month - 1]} de {ahora.year}."
-    )
-
-
-def responder_localmente(texto):
-    """Respuestas exactas que nunca deben ser inventadas por el LLM."""
-    limpio = normalizar_texto(texto)
-    ahora = datetime.now()  # La laptop debe tener configurada la hora de Peru.
-
-    frases_hora = ("que hora", "dime la hora", "hora actual", "cual es la hora")
-    if any(frase in limpio for frase in frases_hora):
-        return respuesta_hora(ahora)
-
-    frases_fecha = (
-        "que fecha", "fecha de hoy", "que dia es", "dime la fecha", "dia de hoy"
-    )
-    if any(frase in limpio for frase in frases_fecha):
-        return respuesta_fecha(ahora)
-
-    if "como te llamas" in limpio or "cual es tu nombre" in limpio:
-        return "Me llamo Yachaybot, y estoy aqui para aprender contigo."
-
-    if "quechua" in limpio and any(
-        palabra in limpio for palabra in ("hablar", "responder", "sabes", "puedes")
-    ):
-        return (
-            "Por ahora converso en espanol. Mis respuestas en quechua se "
-            "incorporaran despues de ser revisadas por un hablante competente."
-        )
-
-    return None
 
 
 # ----------------------------- Audio -----------------------------
@@ -537,46 +440,6 @@ def sintetizar(texto):
 # ----------------------------- Datos de investigacion -----------------------------
 
 
-CATEGORIAS_TEMATICAS = {
-    "Matemática": (
-        "matematica", "numero", "suma", "sumar", "resta", "restar",
-        "multiplicacion", "multiplicar", "division", "dividir", "fraccion",
-        "decimal", "porcentaje", "geometria", "triangulo", "cuadrado",
-        "circulo", "ecuacion", "problema matematico",
-    ),
-    "Ciencia y ambiente": (
-        "ciencia", "planta", "animal", "agua", "aire", "suelo", "tierra",
-        "sol", "luna", "planeta", "universo", "energia", "cuerpo humano",
-        "celula", "ecosistema", "contaminacion", "naturaleza", "clima",
-        "lluvia", "volcan", "terremoto",
-    ),
-    "Comunicación": (
-        "comunicacion", "palabra", "oracion", "sustantivo", "adjetivo",
-        "verbo", "pronombre", "cuento", "poema", "lectura", "leer",
-        "escribir", "ortografia", "significado", "sinonimo", "antonimo",
-        "vocal", "consonante",
-    ),
-    "Ciencias sociales": (
-        "historia", "geografia", "peru", "huancavelica", "tayacaja", "inca",
-        "independencia", "guerra", "presidente", "departamento", "provincia",
-        "distrito", "mapa", "pais", "continente", "cultura",
-    ),
-    "Tecnología": (
-        "tecnologia", "robot", "computadora", "internet", "programacion",
-        "codigo", "inteligencia artificial", "celular", "wifi", "sensor",
-    ),
-    "Lenguas y quechua": (
-        "quechua", "runa simi", "allinllachu", "imaynalla", "sulpayki",
-        "idioma", "traducir", "traduccion",
-    ),
-    "Convivencia y bienestar": (
-        "amistad", "amigo", "familia", "respeto", "violencia", "bullying",
-        "acoso", "miedo", "triste", "tristeza", "enojado", "salud",
-        "higiene", "alimentacion", "emocion", "convivencia",
-    ),
-}
-
-
 def anonimizar_texto(texto):
     """Oculta datos personales evidentes antes de guardar la transcripcion."""
     texto = (texto or "").strip()
@@ -589,44 +452,6 @@ def anonimizar_texto(texto):
     texto = re.sub(r"\b\d{8}\b", "[numero omitido]", texto)
     texto = re.sub(r"(?<!\d)(?:\+?51[ -]?)?9\d{8}(?!\d)", "[telefono omitido]", texto)
     return texto[:1000]
-
-
-def clasificar_tema(texto):
-    limpio = normalizar_texto(texto)
-    tokens = set(limpio.split())
-    mejor_tema = "Otros"
-    mejor_puntaje = 0
-
-    for tema, palabras in CATEGORIAS_TEMATICAS.items():
-        puntaje = 0
-        for palabra in palabras:
-            termino = normalizar_texto(palabra)
-            coincide_palabra = termino in tokens
-            if " " not in termino and len(termino) >= 4:
-                coincide_palabra = coincide_palabra or any(
-                    token.startswith(termino) for token in tokens
-                )
-            if (" " in termino and termino in limpio) or coincide_palabra:
-                puntaje += 2 if " " in termino else 1
-        if puntaje > mejor_puntaje:
-            mejor_tema = tema
-            mejor_puntaje = puntaje
-
-    if mejor_puntaje == 0 and any(
-        frase in limpio for frase in ("que hora", "que fecha", "que dia", "como te llamas")
-    ):
-        return "Información general"
-    if mejor_puntaje == 0 and any(
-        palabra in tokens for palabra in ("hola", "gracias", "adios", "buenos", "buenas")
-    ):
-        return "Conversación"
-    return mejor_tema
-
-
-def detectar_idioma(texto):
-    limpio = normalizar_texto(texto)
-    indicadores = ("quechua", "runa simi", "allinllachu", "imaynalla", "sulpayki")
-    return "Quechua solicitado" if any(x in limpio for x in indicadores) else "Español"
 
 
 def conectar_base_datos():
