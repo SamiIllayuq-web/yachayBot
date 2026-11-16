@@ -10,6 +10,9 @@
 **Metodología:** Matt Pocock (grill → PRD → Kanban → AFK → QA). Ver `matt/matt.txt`
 **Última actualización:** 2026-11-15 (sesión de migración a PostgreSQL)
 
+> **Para retomar el trabajo:** leer este archivo completo, luego
+> `git log --oneline` y `git status`. Todo el avance está commiteado.
+
 ---
 
 ## 1. Estado en una frase
