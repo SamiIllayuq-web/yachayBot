@@ -12,6 +12,10 @@
 
 > **Para retomar el trabajo:** leer este archivo completo, luego
 > `git log --oneline` y `git status`. Todo el avance está commiteado.
+>
+> `AGENTS.md` (en la raíz) le dice al agente que lea esta bitácora al iniciar
+> sesión. Por eso basta con escribir **"continuar yachaybot"** en un chat nuevo:
+> el contexto está aquí, no en la conversación anterior.
 
 ---
 
@@ -35,7 +39,7 @@ desbloquear el blueprint del panel** para cerrar la rebanada T3.
 | T5 Migrar 51 registros | ✅ (hecho en T2) | `fdb19d1` | `scripts/migrar_sqlite_a_postgres.py` |
 | T7 Scripts Windows + README + requirements | ⬜ | — | `.bat` actualizados |
 | T8 Actualizar `YACHAYBOT_IA.docx` | ⬜ | — | Cap. 9, 15, 16 + evidencias + arquitectura v2 |
-| T9 Remoto GitHub + tag `v2.0-postgres` | ⬜ | — | Falta instalar `gh` |
+| T9 Remoto GitHub + tag `v2.0-postgres` | 🟡 | `c9096c0` | Remoto configurado, rama `main` + tag `v1.0-sqlite` subidos. Falta el tag `v2.0-postgres` |
 
 ---
 
