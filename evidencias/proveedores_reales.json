@@ -1,0 +1,13 @@
+{
+  "ollama": {
+    "estado": "no_validado",
+    "codigo": "modelo_no_disponible",
+    "detalle": "No se pudo conectar con el modelo. Revisa Ollama o el proveedor configurado."
+  },
+  "groq": {
+    "estado": "no_validado",
+    "codigo": "tiempo_agotado",
+    "detalle": "El modelo superó el tiempo de espera.",
+    "datos": "solo sintéticos"
+  }
+}

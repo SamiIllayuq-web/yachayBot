@@ -1,0 +1,37 @@
+test_01_interfaz_y_enlace (test_agente.PruebasAgente.test_01_interfaz_y_enlace) ... ok
+test_02_informe_herramienta_y_citas (test_agente.PruebasAgente.test_02_informe_herramienta_y_citas) ... ok
+test_03_filtro_tema (test_agente.PruebasAgente.test_03_filtro_tema) ... ok
+test_04_fechas_incluyen_ultimo_dia (test_agente.PruebasAgente.test_04_fechas_incluyen_ultimo_dia) ... ok
+test_05_pide_periodo (test_agente.PruebasAgente.test_05_pide_periodo) ... ok
+test_06_fechas_invertidas (test_agente.PruebasAgente.test_06_fechas_invertidas) ... ok
+test_07_sin_datos (test_agente.PruebasAgente.test_07_sin_datos) ... ok
+test_08_actividades_piden_grado (test_agente.PruebasAgente.test_08_actividades_piden_grado) ... ok
+test_09_actividades_con_solucionario (test_agente.PruebasAgente.test_09_actividades_con_solucionario) ... ok
+test_10_herramienta_no_permitida (test_agente.PruebasAgente.test_10_herramienta_no_permitida) ... ok
+test_11_argumentos_no_permitidos (test_agente.PruebasAgente.test_11_argumentos_no_permitidos) ... ok
+test_12_rechaza_cita_inexistente (test_agente.PruebasAgente.test_12_rechaza_cita_inexistente) ... ok
+test_13_rechaza_respuesta_sin_herramienta (test_agente.PruebasAgente.test_13_rechaza_respuesta_sin_herramienta) ... ok
+test_14_rechaza_respuesta_sin_citas (test_agente.PruebasAgente.test_14_rechaza_respuesta_sin_citas) ... ok
+test_15_limite_de_pasos (test_agente.PruebasAgente.test_15_limite_de_pasos) ... ok
+test_16_historial_no_modificado (test_agente.PruebasAgente.test_16_historial_no_modificado) ... ok
+test_17_token_exigido (test_agente.PruebasAgente.test_17_token_exigido) ... ok
+test_18_bitacora_sin_textos (test_agente.PruebasAgente.test_18_bitacora_sin_textos) ... ok
+test_19_sql_injection_no_cambia_datos (test_agente.PruebasAgente.test_19_sql_injection_no_cambia_datos) ... ok
+test_20_contrato_http_ollama (test_agente.PruebasAgente.test_20_contrato_http_ollama) ... ok
+test_21_contrato_http_groq (test_agente.PruebasAgente.test_21_contrato_http_groq) ... ok
+test_22_timeout (test_agente.PruebasAgente.test_22_timeout) ... ok
+test_23_modelo_no_disponible (test_agente.PruebasAgente.test_23_modelo_no_disponible) ... ok
+test_24_muestra_limitada_con_conteos_completos (test_agente.PruebasAgente.test_24_muestra_limitada_con_conteos_completos) ... ok
+test_25_datos_estructuralmente_invalidos (test_agente.PruebasAgente.test_25_datos_estructuralmente_invalidos) ... ok
+test_26_esquema_sqlite_ausente (test_agente.PruebasAgente.test_26_esquema_sqlite_ausente) ... ok
+test_27_resultado_tool_groq (test_agente.PruebasAgente.test_27_resultado_tool_groq) ... ok
+test_INT01_panel_enlace (test_integracion.IntegracionServidor.test_INT01_panel_enlace) ... ok
+test_INT02_pagina_agente (test_integracion.IntegracionServidor.test_INT02_pagina_agente) ... ok
+test_INT03_consulta_historial (test_integracion.IntegracionServidor.test_INT03_consulta_historial) ... ok
+test_INT04_filtro_matematica (test_integracion.IntegracionServidor.test_INT04_filtro_matematica) ... ok
+test_INT05_base_original_intacta (test_integracion.IntegracionServidor.test_INT05_base_original_intacta) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.228s
+
+OK

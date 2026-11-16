@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="30">
+  <title>Yachaybot | Analítica educativa</title>
+  <style>
+    :root {
+      --azul: #164e63;
+      --azul-claro: #0891b2;
+      --fondo: #f0f7f9;
+      --texto: #173042;
+      --borde: #d5e4e8;
+      --verde: #15803d;
+      --rojo: #b91c1c;
+      --ambar: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--texto);
+      background: var(--fondo);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    header {
+      color: white;
+      padding: 24px clamp(18px, 5vw, 72px);
+      background: linear-gradient(120deg, #164e63, #0e7490);
+      box-shadow: 0 3px 12px rgba(15, 62, 77, .2);
+    }
+    header h1 { margin: 0 0 5px; font-size: clamp(25px, 4vw, 38px); }
+    header p { margin: 0; opacity: .9; }
+    main { max-width: 1280px; margin: auto; padding: 24px; }
+    .panel {
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 18px rgba(28, 67, 80, .06);
+    }
+    .filtros { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+    label { display: grid; gap: 6px; font-size: 13px; font-weight: 650; }
+    select, button, .boton {
+      min-height: 40px;
+      border-radius: 8px;
+      border: 1px solid #b9cdd3;
+      padding: 8px 12px;
+      background: white;
+      color: var(--texto);
+      font: inherit;
+    }
+    button, .boton {
+      border-color: var(--azul);
+      background: var(--azul);
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .boton.secundario { background: white; color: var(--azul); }
+    .tarjetas {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .tarjeta {
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 13px;
+      padding: 18px;
+      box-shadow: 0 5px 18px rgba(28, 67, 80, .05);
+    }
+    .tarjeta span { color: #59727b; font-size: 13px; }
+    .tarjeta strong { display: block; color: var(--azul); font-size: 30px; margin-top: 5px; }
+    .dos-columnas { display: grid; grid-template-columns: 1.1fr .9fr; gap: 20px; }
+    h2 { margin: 0 0 16px; font-size: 20px; }
+    .fila-barra { margin: 13px 0; }
+    .etiqueta-barra { display: flex; justify-content: space-between; gap: 15px; font-size: 14px; }
+    .pista { height: 11px; background: #e4eff2; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+    .barra { height: 100%; min-width: 2px; border-radius: 999px; background: linear-gradient(90deg, #0e7490, #22b8cf); }
+    .tabla-contenedor { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid #e5eef0; text-align: left; vertical-align: top; }
+    th { color: #47616a; background: #f7fafb; white-space: nowrap; }
+    tr:hover td { background: #fbfdfe; }
+    .estado {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .correcto { color: var(--verde); background: #dcfce7; }
+    .advertencia { color: var(--ambar); background: #fef3c7; }
+    .error { color: var(--rojo); background: #fee2e2; }
+    .vacio { color: #6b7f86; text-align: center; padding: 35px; }
+    .nota {
+      padding: 13px 15px;
+      border-left: 4px solid var(--azul-claro);
+      background: #ecfeff;
+      border-radius: 7px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    footer { color: #667d85; text-align: center; font-size: 12px; padding: 4px 20px 25px; }
+    @media (max-width: 850px) {
+      .tarjetas { grid-template-columns: repeat(2, 1fr); }
+      .dos-columnas { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      main { padding: 14px; }
+      .tarjetas { grid-template-columns: 1fr; }
+      .filtros > * { width: 100%; }
+      select, button, .boton { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Yachaybot</h1>
+    <p>Panel de analítica educativa para apoyar la planificación docente</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <form class="filtros" method="get" action="{{ url_for('dashboard') }}">
+        <label>Periodo
+          <select name="dias">
+            {% for valor, etiqueta in opciones_dias %}
+              <option value="{{ valor }}" {% if valor == dias %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Tema
+          <select name="tema">
+            <option value="Todos">Todos los temas</option>
+            {% for tema in datos.temas_disponibles %}
+              <option value="{{ tema }}" {% if tema == tema_seleccionado %}selected{% endif %}>{{ tema }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button type="submit">Aplicar filtros</button>
+        <a class="boton secundario" href="{{ exportar_url }}">Exportar a CSV</a>
+        <a class="boton" href="/agente">Abrir agente docente</a>
+      </form>
+    </section>
+
+    <section class="tarjetas">
+      <article class="tarjeta"><span>Preguntas registradas</span><strong>{{ datos.total }}</strong></article>
+      <article class="tarjeta"><span>Registros con respuesta</span><strong>{{ datos.porcentaje_exito }}%</strong></article>
+      <article class="tarjeta"><span>Incidencias detectadas</span><strong>{{ datos.incidencias }}</strong></article>
+      <article class="tarjeta"><span>Tiempo promedio</span><strong>{{ datos.promedio_s }} s</strong></article>
+    </section>
+
+    <section class="dos-columnas">
+      <article class="panel">
+        <h2>Preguntas por tema</h2>
+        {% if datos.por_tema %}
+          {% for item in datos.por_tema %}
+            <div class="fila-barra">
+              <div class="etiqueta-barra">
+                <span>{{ item.tema }}</span>
+                <strong>{{ item.cantidad }} · {{ item.porcentaje }}%</strong>
+              </div>
+              <div class="pista"><div class="barra" style="width: {{ item.ancho }}%"></div></div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="vacio">Todavia no hay preguntas para mostrar.</div>
+        {% endif %}
+      </article>
+
+      <article class="panel">
+        <h2>Actividad de los últimos días</h2>
+        {% if datos.por_dia %}
+          {% for item in datos.por_dia %}
+            <div class="fila-barra">
+              <div class="etiqueta-barra"><span>{{ item.dia }}</span><strong>{{ item.cantidad }}</strong></div>
+              <div class="pista"><div class="barra" style="width: {{ item.ancho }}%"></div></div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="vacio">La actividad aparecera cuando se use el robot.</div>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Preguntas más frecuentes</h2>
+      <div class="tabla-contenedor">
+        <table>
+          <thead><tr><th>Pregunta anónima</th><th>Tema</th><th>Repeticiones</th></tr></thead>
+          <tbody>
+            {% for fila in datos.frecuentes %}
+              <tr><td>{{ fila.pregunta }}</td><td>{{ fila.tema }}</td><td>{{ fila.cantidad }}</td></tr>
+            {% else %}
+              <tr><td class="vacio" colspan="3">Aún no existen preguntas frecuentes.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Interacciones recientes</h2>
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr><th>Fecha</th><th>Pregunta</th><th>Tema</th><th>Estado</th><th>Tiempo</th><th>Respuesta</th></tr>
+          </thead>
+          <tbody>
+            {% for fila in datos.recientes %}
+              <tr>
+                <td>{{ fila.fecha.replace('T', ' ') }}</td>
+                <td>{{ fila.pregunta }}</td>
+                <td>{{ fila.tema }}</td>
+                <td>
+                  {% if fila.estado == 'Respondida' %}
+                    <span class="estado correcto">{{ fila.estado }}</span>
+                  {% elif fila.estado == 'No comprendida' %}
+                    <span class="estado advertencia">{{ fila.estado }}</span>
+                  {% else %}
+                    <span class="estado error">{{ fila.estado }}</span>
+                  {% endif %}
+                </td>
+                <td>{% if fila.ms_total %}{{ (fila.ms_total / 1000)|round(2) }} s{% else %}-{% endif %}</td>
+                <td>{{ fila.respuesta or '-' }}</td>
+              </tr>
+            {% else %}
+              <tr><td class="vacio" colspan="6">Las nuevas interacciones apareceran aqui automaticamente.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="nota">
+      Las preguntas se guardan sin identificar al estudiante y los correos, teléfonos o números de ocho dígitos se ocultan automáticamente.
+      {% if guardar_audio %}
+        La grabación de audio está activada por configuración.
+      {% else %}
+        Las grabaciones de voz no se conservan.
+      {% endif %}
+      El panel se actualiza cada 30 segundos.
+    </section>
+  </main>
+  <footer>Yachaybot · Módulo local de analítica educativa</footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "3_PROBAR.bat": "ab46551fc0c3fcf0ffd9faf647442d46dcae82de2e83765e5c65e51edf03ddbd",
+  "test_integracion.py": "941f5bcbb0ea64a183a1e328e640bd1f86a82da00cdca2fb66a7f89a2cee1dd0",
+  "descargar_voz.py": "caa36971b8b59f784c4b10326e9f3172b6da3ce5b9942e0d4b9be7392e9ee7ec",
+  "2_ARRANCAR.bat": "c98ea80ffe1c478074a40367575622abee8da53060a1d0b804983e1a36757515",
+  "probar_sin_robot.py": "173764ead2f23db635400995b0bdf0764f1a5ec21a78a80918d2d390e871c070",
+  "README_AGENTE.md": "b0e1dcd06f9c53cc9749ff0b1fd70040677086c562f8145bcce2d6135e0f8334",
+  "4_ABRIR_DASHBOARD.bat": "2358fe864a3662917d725161cb9906781d4e1c4c7d31c8ff50ea6969bce6bdbd",
+  "1_INSTALAR.bat": "8bc6be989ed39ba9a1270e8a7625de6bedb7fb4cd9510e09642fa18ea24c6e68",
+  "test_agente.py": "5d9ea0d99ff0a07aaeea7e8a8d9d6fca0c92512403f41c7b59a1acca784f94bc",
+  "6_ARRANCAR_AGENTE.bat": "c59f60e3021d1f5605fcfef9896fc441e607ade7a6c2172a567abc24a3695660",
+  "5_ABRIR_FIREWALL.bat": "df502b9173717a5be32d80e8cbf0838632095108988b7be8296856e5782908f9",
+  "agente_docente.py": "f76465d2107a984c20dd3185a9e0f7ffcd3863aec3c7025f67f21d4d650244e6",
+  "7_PROBAR_AGENTE.bat": "0ae6901b2b0d93ed9d8c5e9d09781482ba9f4f52e53f9cec05d0c678b1e6f9ba",
+  "server.py": "4aa5a41f27c86a69e5be160375a55cf12b297a417609ccdc30602ab20265a3da",
+  "templates/agente.html": "e5a676b1c09360ab3d7d6acb078eeb5c6f6cd4ba8fe6916c51b654a93a975c9c",
+  "templates/dashboard.html": "b5dbdcd9f86532800a471206194bb8cda41962d75c13c2238cacb3b1003c0917"
+}

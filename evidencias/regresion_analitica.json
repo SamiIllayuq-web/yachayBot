@@ -1,0 +1,122 @@
+{
+  "execution_host_timestamp": "2026-10-25T22:49:26.186364",
+  "display_date": "25 de octubre de 2026 (America/Lima)",
+  "method": "Flask test_client; SQLite real en copia de trabajo; sin red externa; casos sintéticos separados",
+  "source_db_sha256": "54fbc3d464a353402ef78bcb40542ede9963690cf3033284fcfeaab630e9c03e",
+  "source_code_sha256": "4aa5a41f27c86a69e5be160375a55cf12b297a417609ccdc30602ab20265a3da",
+  "results": [
+    {
+      "id": "CP02",
+      "description": "Historial mostrado y contrastado con SQLite",
+      "status": "APROBADA",
+      "detail": "HTTP 200; total SQLite=51; pregunta y respuesta cotejadas con el HTML del panel."
+    },
+    {
+      "id": "CP04",
+      "description": "Exactitud de agregados históricos",
+      "status": "APROBADA",
+      "detail": {
+        "total": 51,
+        "temas": {
+          "Otros": 38,
+          "Matemática": 5,
+          "Conversación": 3,
+          "Lenguas y quechua": 3,
+          "Comunicación": 1,
+          "Tecnología": 1
+        },
+        "promedio_s": 6.09,
+        "porcentaje_estado": 100.0,
+        "incidencias": 0
+      }
+    },
+    {
+      "id": "EX01",
+      "description": "Filtro por tema",
+      "status": "APROBADA",
+      "detail": "Filtro Matemática: 5 registros y una categoría."
+    },
+    {
+      "id": "EX02",
+      "description": "Exportación CSV",
+      "status": "APROBADA",
+      "detail": "HTTP 200; 51 registros y cabecera; 11 columnas."
+    },
+    {
+      "id": "CP05",
+      "description": "Integridad lógica después de consultas",
+      "status": "APROBADA",
+      "detail": "51 filas y todos sus campos permanecen idénticos tras consultar panel, API y CSV."
+    },
+    {
+      "id": "EX03",
+      "description": "Filtro temporal sobre historial antiguo",
+      "status": "APROBADA",
+      "detail": "0 registros con datos históricos de agosto; filtro temporal relativo al reloj de ejecución."
+    },
+    {
+      "id": "EX04",
+      "description": "Clasificación básica por reglas",
+      "status": "APROBADA",
+      "detail": "4 de 4 ejemplos controlados con etiqueta esperada."
+    },
+    {
+      "id": "EX05",
+      "description": "Clasificación ante palabra con prefijo ambiguo",
+      "status": "FALLIDA",
+      "detail": "Esperado Otros; obtenido Matemática. Coincidencia por prefijo restaurante/resta."
+    },
+    {
+      "id": "CP06",
+      "description": "Historial vacío",
+      "status": "APROBADA",
+      "detail": "Base vacía: panel HTTP 200; total 0; lista temática vacía; promedio 0."
+    },
+    {
+      "id": "CP01",
+      "description": "Guardado de interacción sintética",
+      "status": "APROBADA",
+      "detail": "Registro sintético almacenado con pregunta, respuesta, tema Matemática, estado y ms_total=1200."
+    },
+    {
+      "id": "CP03",
+      "description": "Persistencia en proceso independiente",
+      "status": "APROBADA",
+      "detail": "Nueva conexión SQLite en proceso Python independiente recupera 1 registro sintético. No equivale a reiniciar Windows o el robot."
+    },
+    {
+      "id": "EX06",
+      "description": "Filtros temporales inválidos",
+      "status": "APROBADA",
+      "detail": "dias=abc y dias=-9 se normalizan a 30."
+    },
+    {
+      "id": "EX07",
+      "description": "Anonimización de patrones definidos",
+      "status": "APROBADA",
+      "detail": "Oculta correo, ocho dígitos y teléfono del ejemplo sintético; no demuestra anonimización completa de nombres u otros datos."
+    },
+    {
+      "id": "EX08",
+      "description": "Ruta /talk con servicios simulados",
+      "status": "APROBADA",
+      "detail": "HTTP 200, 200 bytes devueltos y segunda fila guardada. STT, respuesta y TTS sustituidos por dobles de prueba: valida orquestación, no voz ni IA reales."
+    },
+    {
+      "id": "EX09",
+      "description": "Manejo de fallo interno simulado",
+      "status": "APROBADA",
+      "detail": "Registra Error del servidor y devuelve audio vacío con HTTP 200. El estado HTTP no permite distinguir este fallo del éxito."
+    }
+  ],
+  "summary": {
+    "total": 15,
+    "passed": 14,
+    "failed": 1
+  },
+  "limits": [
+    "Sin ESP32 ni micrófono/parlante físicos",
+    "Sin inferencia real Groq, Ollama o Piper",
+    "Sin interfaz de navegador; rutas HTML mediante cliente Flask"
+  ]
+}

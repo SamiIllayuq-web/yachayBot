@@ -1,0 +1,20 @@
+# Credenciales
+clave.txt
+*.key
+
+# Datos locales y artefactos regenerables
+datos/
+voces/
+respuesta.wav
+__pycache__/
+*.pyc
+
+# Entorno virtual
+.venv/
+venv/
+
+# Documentos de trabajo transitorios (PRD y tablero se borran al cerrar el hito)
+.hermes/
+
+# Referencia externa: transcripcion del taller de Matt Pocock (no es codigo del proyecto)
+matt/

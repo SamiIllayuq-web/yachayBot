@@ -1,0 +1,27 @@
+{
+  "metodo": "Flask test_client sobre server.py integrado; copia SQLite de 51 registros; modelo simulado, sin inferencia real.",
+  "pruebas": [
+    {
+      "caso": "INT01",
+      "resultado": "Panel HTTP 200 y enlace al agente."
+    },
+    {
+      "caso": "INT02",
+      "resultado": "Interfaz del agente HTTP 200 desde server.py."
+    },
+    {
+      "caso": "INT03",
+      "resultado": "Agente integrado: 51 registros, herramienta y referencia a ID real; modelo simulado."
+    },
+    {
+      "caso": "INT04",
+      "resultado": "Agente integrado: filtro Matemática = 5; modelo simulado."
+    },
+    {
+      "caso": "INT05",
+      "resultado": "51 interacciones intactas en copia; hash de base original sin cambios."
+    }
+  ],
+  "aprobadas": 5,
+  "sha256_db_original": "54fbc3d464a353402ef78bcb40542ede9963690cf3033284fcfeaab630e9c03e"
+}
